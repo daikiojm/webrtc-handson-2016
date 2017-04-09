@@ -73,3 +73,30 @@ let sendSdp => (sessionDescription) {
     textForSendSdp.focus();
     textForSendSdp.select();
 }
+
+// Connectボタンが押されたら処理を開始
+let connect = () => {
+    if (! peerConnection) {
+        console.log('make Offer');
+        makeOffer();
+    }
+    else {
+        console.warn('peer already exist.');
+    }
+}
+
+// Offer SDPを生成する
+let makeOffer = () => {
+    peerConnection = prepareNewConnection();
+    peerConnection.onnegotiationneeded = () => {
+        peerConnection.createOffer()
+            .then((sessionDescription) => {
+                console.log('createOffer() succsess in promise');
+                return peerConnection.setLocalDescription(sessionDescription);
+            }).then(() => {
+                console.log('setLocalDescription() succsess in promise');
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
+}
