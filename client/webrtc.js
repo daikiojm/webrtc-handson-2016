@@ -8,7 +8,7 @@ let peerConnection = null;
 
 // getUserMediaでカメラ、マイクにアクセス
 function startVideo() {
-    navigator.mediaDevices.getUserMedia({video: true, audio: true})
+    navigator.mediaDevices.getUserMedia({video: { frameRate: { min: 10, max: 15 } }, audio: true})
         .then(function (stream) { // success
             playVideo(localVideo,stream);
             localStream = stream;
