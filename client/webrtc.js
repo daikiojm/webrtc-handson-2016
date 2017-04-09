@@ -120,7 +120,8 @@ let makeAnswer = () => {
 }
 
 // SDPのタイプを判別しセットする
-let onSdpText = () => {
+// SDPのタイプを判別しセットする
+let onSdpText =() => {
     const text = textToReceiveSdp.value;
     if (peerConnection) {
         // Offerした側が相手からのAnswerをセットする場合
@@ -142,7 +143,6 @@ let onSdpText = () => {
     }
     textToReceiveSdp.value ='';
 }
-
 // Offer側のSDPをセットした場合の処理
 let setOffer = (sessionDescription) => {
     if (peerConnection) {
