@@ -100,3 +100,21 @@ let makeOffer = () => {
         });
     }
 }
+
+// Answer SDPを生成する
+let makeAnswer = () => {
+    console.log('sending Answer. Creating remote session description...' );
+    if (! peerConnection) {
+        console.error('peerConnection NOT exist!');
+        return;
+    }
+    peerConnection.createAnswer()
+        .then((sessionDescription) => {
+            console.log('createAnswer() succsess in promise');
+            return peerConnection.setLocalDescription(sessionDescription);
+        }).then(() => {
+            console.log('setLocalDescription() succsess in promise');
+    }).catch((err) => {
+        console.error(err);
+    });
+}
