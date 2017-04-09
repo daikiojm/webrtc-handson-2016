@@ -118,3 +118,58 @@ let makeAnswer = () => {
         console.error(err);
     });
 }
+
+// SDPのタイプを判別しセットする
+let onSdpText = () => {
+    const text = textToReceiveSdp.value;
+    if (peerConnection) {
+        // Offerした側が相手からのAnswerをセットする場合
+        console.log('Received answer text...');
+        const answer = new RTCSessionDescription({
+            type : 'answer',
+            sdp : text,
+        });
+        setAnswer(answer);
+    }
+    else {
+        // Offerを受けた側が相手からのOfferをセットする場合
+        console.log('Received offer text...');
+        const offer = new RTCSessionDescription({
+            type : 'offer',
+            sdp : text,
+        });
+        setOffer(offer);
+    }
+    textToReceiveSdp.value ='';
+}
+
+// Offer側のSDPをセットした場合の処理
+let setOffer = (sessionDescription) => {
+    if (peerConnection) {
+        console.error('peerConnection alreay exist!');
+    }
+    peerConnection = prepareNewConnection();
+    peerConnection.onnegotiationneeded = () {
+        peerConnection.setRemoteDescription(sessionDescription)
+            .then(() => {
+                console.log('setRemoteDescription(offer) succsess in promise');
+                makeAnswer();
+            }).catch((err) => {
+                console.error('setRemoteDescription(offer) ERROR: ', err);
+        });
+    }
+}
+
+// Answer側のSDPをセットした場合の処理
+let setAnswer = (sessionDescription) => {
+    if (! peerConnection) {
+        console.error('peerConnection NOT exist!');
+        return;
+    }
+    peerConnection.setRemoteDescription(sessionDescription)
+        .then(() => {
+            console.log('setRemoteDescription(answer) succsess in promise');
+        }).catch(function(err) {
+            console.error('setRemoteDescription(answer) ERROR: ', err);
+    });
+}
